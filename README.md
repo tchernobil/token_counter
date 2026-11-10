@@ -31,10 +31,12 @@ cp config.example.json config.json
 ## Utilisation
 
 ```bash
-python -m token_counter <tokens_utilises_depuis_le_debut_du_mois>
-python -m token_counter 250000 --config autre_config.json
-python -m token_counter 12,000    # séparateur de milliers accepté : 12000
+./start.sh <tokens_utilises_depuis_le_debut_du_mois>
+./start.sh 250000 --config autre_config.json
+./start.sh 12,000    # séparateur de milliers accepté : 12000
 ```
+
+`start.sh` est un raccourci pour `python3 -m token_counter` et transmet tous ses arguments. Le `config.json` par défaut est cherché dans le dossier courant.
 
 Exemple de sortie :
 
