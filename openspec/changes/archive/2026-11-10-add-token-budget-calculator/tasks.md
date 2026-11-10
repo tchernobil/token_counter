@@ -10,13 +10,13 @@
 
 ## 3. Calendrier
 
-- [x] 3.1 Implémenter `calendar_utils.py` : jour ouvré, jours ouvrés restants (aujourd'hui inclus), rendu du calendrier du mois
-- [x] 3.2 Tests unitaires : week-end, férié, aujourd'hui ouvré / non ouvré, fin de mois
+- [x] 3.1 Implémenter `calendar_utils.py` : jour ouvrable, jours ouvrables restants (aujourd'hui inclus), rendu du calendrier du mois
+- [x] 3.2 Tests unitaires : week-end, férié, aujourd'hui ouvrable / non ouvrable, fin de mois
 
 ## 4. Budget
 
 - [x] 4.1 Implémenter `budget.py` : reste, quota par jour restant, quota normal par jour, ratio et tokens à épargner (fonctions pures)
-- [x] 4.2 Tests unitaires : reste positif, dépassement, aucun jour restant, arrondi, ratio, mois sans jour ouvré
+- [x] 4.2 Tests unitaires : reste positif, dépassement, aucun jour restant, arrondi, ratio, mois sans jour ouvrable
 
 ## 5. CLI
 

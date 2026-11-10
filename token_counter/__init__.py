@@ -1,1 +1,1 @@
-"""Compteur de tokens : reste du mois et quota par jour ouvré."""
+"""Compteur de tokens : reste du mois et quota par jour ouvrable."""

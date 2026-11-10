@@ -2,6 +2,7 @@ import json
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
+from typing import Optional
 
 
 class ConfigError(Exception):
@@ -12,6 +13,8 @@ class ConfigError(Exception):
 class Config:
     total_tokens: int
     holidays: frozenset[date]
+    exclude_today: bool = False
+    debug_date: Optional[date] = None
 
 
 def load_config(path: Path) -> Config:
@@ -45,4 +48,25 @@ def load_config(path: Path) -> Config:
                 f"Jour férié invalide : {entry!r} (format attendu AAAA-MM-JJ)"
             ) from None
 
-    return Config(total_tokens=total, holidays=frozenset(holidays))
+    exclude_today = raw.get("exclude_today", False)
+    if not isinstance(exclude_today, bool):
+        raise ConfigError("'exclude_today' doit être un booléen (true ou false)")
+
+    debug_raw = raw.get("debug_date")
+    debug_date = None
+    if debug_raw is not None:
+        try:
+            if not isinstance(debug_raw, str):
+                raise ValueError
+            debug_date = date.fromisoformat(debug_raw)
+        except ValueError:
+            raise ConfigError(
+                f"'debug_date' invalide : {debug_raw!r} (format attendu AAAA-MM-JJ ou null)"
+            ) from None
+
+    return Config(
+        total_tokens=total,
+        holidays=frozenset(holidays),
+        exclude_today=exclude_today,
+        debug_date=debug_date,
+    )

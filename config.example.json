@@ -1,4 +1,6 @@
 {
   "total_tokens": 1000000,
-  "holidays": ["2026-11-11", "2026-12-25"]
+  "holidays": ["2026-11-11", "2026-12-25"],
+  "exclude_today": true,
+  "debug_date": null
 }

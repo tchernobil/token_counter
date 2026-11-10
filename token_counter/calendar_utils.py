@@ -33,7 +33,7 @@ MOIS = [
 
 def render_month(today: date, holidays) -> str:
     """Calendrier texte en tableau : * aujourd'hui, & férié, . week-end."""
-    width = 4
+    width = 6
     border = "+" + "+".join("-" * width for _ in range(7)) + "+"
     title = f"{MOIS[today.month - 1]} {today.year}".center(len(border)).rstrip()
     lines = [
@@ -60,7 +60,7 @@ def render_month(today: date, holidays) -> str:
                 mark = "."
             else:
                 mark = " "
-            cells.append(f"{d:>2}{mark} ")
+            cells.append(f"{d:>3}{mark}  ")
         lines.append("|" + "|".join(cells) + "|")
         lines.append(border)
     lines.append("(* aujourd'hui, & férié, . week-end)")

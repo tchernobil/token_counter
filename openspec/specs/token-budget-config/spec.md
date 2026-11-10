@@ -1,8 +1,9 @@
-## Purpose
+# token-budget-config Specification
 
+## Purpose
 Définir comment l'application lit sa configuration : le total de tokens du mois et la liste des jours fériés.
 
-## ADDED Requirements
+## Requirements
 
 ### Requirement: Total de tokens dans config.json
 Le système SHALL lire le total de tokens du mois dans le champ `total_tokens` de `config.json`, entier strictement positif.
@@ -20,7 +21,7 @@ Le système SHALL lire la liste des jours fériés dans le champ `holidays` de `
 
 #### Scenario: Liste valide
 - **WHEN** `holidays` contient `["2026-12-25"]`
-- **THEN** le 25 décembre 2026 est traité comme non ouvré
+- **THEN** le 25 décembre 2026 est traité comme non ouvrable
 
 #### Scenario: Date invalide
 - **WHEN** une entrée de `holidays` n'est pas une date `AAAA-MM-JJ` valide
