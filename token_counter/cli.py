@@ -60,6 +60,7 @@ def run(used: int, config_path: Path, today: date) -> int:
         print("ATTENTION : le total de tokens du mois est dépassé.")
     if budget.normal_per_day is None:
         print("Aucun jour ouvré dans le mois.")
+        print()
         return 0
     if budget.remaining_per_day is None:
         print(f"Quota normal par jour : {_fmt(budget.normal_per_day)}")
@@ -75,6 +76,7 @@ def run(used: int, config_path: Path, today: date) -> int:
         )
     elif budget.to_save == 0:
         print("À épargner   : 0 (rythme normal tenu)")
+    print()
     return 0
 
 

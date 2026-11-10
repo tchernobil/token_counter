@@ -13,7 +13,7 @@ Dépôt vide (README uniquement). Besoin : CLI Python locale pour suivre un quot
 - **Commande unique** : `python -m token_counter <tokens_utilises>` (argument positionnel obligatoire, entier ≥ 0). Option `--config` (défaut `config.json`).
 - **Sans état** : aucune persistance ; chaque exécution recalcule tout à partir de l'argument, de la config et de la date du jour.
 - **Fonctions pures** : la date du jour est injectée (paramètre `today`) pour tester sans horloge réelle.
-- **Calendrier** : rendu texte via `calendar.monthcalendar`, nom du mois en français (table interne, indépendante de la locale), marqueurs `*` (aujourd'hui), `&` (férié), `.` (week-end) ; pas de couleurs pour rester portable.
+- **Calendrier** : rendu texte en tableau (lignes et colonnes `+-|`) via `calendar.monthcalendar`, nom du mois en français (table interne, indépendante de la locale), marqueurs `*` (aujourd'hui), `&` (férié), `.` (week-end) ; pas de couleurs pour rester portable.
 - **Arrondi** : quota/jour = division entière du reste positif ; reste négatif => pas de quota, avertissement.
 - **Quota normal** : `total_tokens // jours ouvrés du mois entier`. Le ratio affiché est `quota restant / quota normal` (en %), sous la forme `X / Y (Z %)` ; > 100 % signifie qu'on peut consommer plus que la normale, < 100 % qu'il faut ralentir.
 - **Tests** : `pytest` ou `unittest` sur les fonctions pures ; `unittest` retenu pour éviter une dépendance.

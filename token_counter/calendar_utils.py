@@ -23,6 +23,8 @@ def remaining_working_days(today: date, holidays) -> int:
     )
 
 
+JOURS = ["Di", "Lu", "Ma", "Me", "Je", "Ve", "Sa"]
+
 MOIS = [
     "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
     "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre",
@@ -30,10 +32,16 @@ MOIS = [
 
 
 def render_month(today: date, holidays) -> str:
-    """Calendrier texte : * aujourd'hui, & férié, . week-end."""
+    """Calendrier texte en tableau : * aujourd'hui, & férié, . week-end."""
+    width = 4
+    border = "+" + "+".join("-" * width for _ in range(7)) + "+"
+    title = f"{MOIS[today.month - 1]} {today.year}".center(len(border)).rstrip()
     lines = [
-        f"{MOIS[today.month - 1]} {today.year}".center(27).rstrip(),
-        " Di  Lu  Ma  Me  Je  Ve  Sa",
+        "",
+        title,
+        border,
+        "|" + "|".join(f"{n:^{width}}" for n in JOURS) + "|",
+        border,
     ]
     for week in calendar.Calendar(firstweekday=6).monthdayscalendar(
         today.year, today.month
@@ -41,7 +49,7 @@ def render_month(today: date, holidays) -> str:
         cells = []
         for d in week:
             if d == 0:
-                cells.append("    ")
+                cells.append(" " * width)
                 continue
             current = date(today.year, today.month, d)
             if current == today:
@@ -53,6 +61,7 @@ def render_month(today: date, holidays) -> str:
             else:
                 mark = " "
             cells.append(f"{d:>2}{mark} ")
-        lines.append("".join(cells).rstrip())
+        lines.append("|" + "|".join(cells) + "|")
+        lines.append(border)
     lines.append("(* aujourd'hui, & férié, . week-end)")
     return "\n".join(lines)

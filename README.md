@@ -11,35 +11,20 @@ Copier l'exemple puis l'adapter :
 ```bash
 cp config.example.json config.json
 ```
-
-```json
-{
-  "total_tokens": 1000000,
-  "holidays": ["2026-11-11", "2026-12-25"]
-}
-```
-
-- `total_tokens` : total de tokens du mois (entier > 0).
-- `holidays` : jours fériés, au format `AAAA-MM-JJ`. Les week-ends (samedi, dimanche) sont toujours exclus.
-
-`config.json` est ignoré par git.
-
-## Utilisation
-
-```bash
-python -m token_counter <tokens_utilises_depuis_le_debut_du_mois>
-python -m token_counter 250000 --config autre_config.json
-```
-
-Exemple de sortie :
-
-```
-       Novembre 2026
- Di  Lu  Ma  Me  Je  Ve  Sa
-                         1.
- 2   3   4   5   6   7.  8.
- 9  10* 11& 12  13  14. 15.
-...
+           Novembre 2026
++----+----+----+----+----+----+----+
+| Di | Lu | Ma | Me | Je | Ve | Sa |
++----+----+----+----+----+----+----+
+| 1. | 2  | 3  | 4  | 5  | 6  | 7. |
++----+----+----+----+----+----+----+
+| 8. | 9  |10* |11& |12  |13  |14. |
++----+----+----+----+----+----+----+
+|15. |16  |17  |18  |19  |20  |21. |
++----+----+----+----+----+----+----+
+|22. |23  |24  |25  |26  |27  |28. |
++----+----+----+----+----+----+----+
+|29. |30  |    |    |    |    |    |
++----+----+----+----+----+----+----+
 (* aujourd'hui, & férié, . week-end)
 
 Total        : 1 000 000
