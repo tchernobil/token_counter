@@ -11,8 +11,12 @@ Le système SHALL recevoir en argument le nombre total de tokens utilisés depui
 - **WHEN** l'utilisateur lance le programme avec 250000 comme tokens utilisés
 - **THEN** 250000 est utilisé comme consommation du mois pour les calculs
 
+#### Scenario: Séparateur de milliers
+- **WHEN** la valeur est saisie avec un séparateur de milliers régulier, par exemple `12,000` ou `12 000`
+- **THEN** elle est interprétée comme 12000
+
 #### Scenario: Valeur invalide ou absente
-- **WHEN** la valeur est absente, non entière ou négative
+- **WHEN** la valeur est absente, non entière, négative ou avec un groupement irrégulier (par exemple `12,5`)
 - **THEN** le système affiche un message d'usage et se termine avec un code de sortie non nul
 
 ### Requirement: Calcul du reste de tokens

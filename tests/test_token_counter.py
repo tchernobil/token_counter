@@ -11,6 +11,7 @@ from token_counter.calendar_utils import (
     render_month,
     working_days_in_month,
 )
+from token_counter.cli import parse_tokens
 from token_counter.config import ConfigError, load_config
 
 
@@ -41,6 +42,23 @@ class ConfigTests(unittest.TestCase):
         with self.assertRaises(ConfigError) as ctx:
             load_config(Path("/nonexistent/config.json"))
         self.assertIn("/nonexistent/config.json", str(ctx.exception))
+
+
+class ParseTokensTests(unittest.TestCase):
+    def test_accepted(self):
+        for text, expected in [
+            ("12000", 12000),
+            ("12,000", 12000),
+            ("1,234,567", 1234567),
+            ("12 000", 12000),
+            ("0", 0),
+        ]:
+            self.assertEqual(parse_tokens(text), expected)
+
+    def test_rejected(self):
+        for text in ("12,5", "1,23", "12,0000", "abc", "", "1.5"):
+            with self.assertRaises(ValueError):
+                parse_tokens(text)
 
 
 class CalendarTests(unittest.TestCase):

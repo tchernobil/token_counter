@@ -1,4 +1,5 @@
 import argparse
+import re
 import sys
 from datetime import date
 from pathlib import Path
@@ -12,9 +13,20 @@ def _fmt(n: int) -> str:
     return f"{n:,}".replace(",", " ")
 
 
+_GROUPED = re.compile(r"\d{1,3}(?:[, \u00a0\u202f]\d{3})+")
+
+
+def parse_tokens(value: str) -> int:
+    """Entier, avec séparateur de milliers optionnel (12,000 ou 12 000)."""
+    text = value.strip()
+    if _GROUPED.fullmatch(text):
+        text = re.sub(r"[, \u00a0\u202f]", "", text)
+    return int(text)
+
+
 def _non_negative_int(value: str) -> int:
     try:
-        number = int(value)
+        number = parse_tokens(value)
     except ValueError:
         raise argparse.ArgumentTypeError(f"entier attendu, reçu {value!r}") from None
     if number < 0:
