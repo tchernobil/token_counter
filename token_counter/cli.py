@@ -116,6 +116,10 @@ def run(
             f"À épargner      : {_fmt(budget.to_save)} tokens "
             f"pour tenir {_fmt(budget.normal_per_day)}/jour"
         )
+        print(
+            f"Il manquera     : ≈ {budget.to_save / budget.normal_per_day:.1f} "
+            "jours de quota normal"
+        )
     elif budget.to_save == 0:
         print("À épargner      : 0 (rythme normal tenu)")
     print()

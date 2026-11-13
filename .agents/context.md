@@ -121,3 +121,32 @@ Date : 2026-10-25. Dépôt : `/root/git/TMNT` (cluster ARM, Ansible, k3s/microk8
 1. Valider `make init` sur `c0` puis un second passage (`changed=0`).
 2. Tester `make k3s` sur un cluster réduit (`--check --diff --limit`), puis un second passage (`changed=0`).
 3. Choisir la version k3s (`latest` ou `stable`) en tenant compte du garde-fou.
+
+---
+
+## Contexte du projet : token_counter
+
+### Demande
+Calculer les tokens restants à consommer par jour ouvrable jusqu'à la fin du mois, et affiner « Par jour » et « À épargner » (compter ou non le jour courant, simuler une date).
+
+### Environnement constaté
+- Python 3.9+, aucune dépendance externe. Tests : `python3 -m unittest discover -s tests`.
+- Package `token_counter/` : `config.py`, `calendar_utils.py`, `budget.py` (fonctions pures), `cli.py`. Lancement : `python -m token_counter <tokens_utilises> [--config f] [--debug_date AAAA-MM-JJ]`.
+- `config.json` (ignoré par git) : `total_tokens`, `holidays`, `exclude_today` (défaut `false`), `debug_date` (défaut `null`). Modèle : `config.example.json`.
+- Workflow : OpenSpec (`openspec/changes/`, schéma spec-driven, artefacts en français). Vocabulaire : « jours ouvrables » (et non « ouvrés »).
+
+### Réalisé (non committé)
+- Change `add-token-budget-calculator` : calculateur initial (11/11 tâches), prêt à archiver.
+- Change `improve-daily-budget-today` : clé `exclude_today` ; à `true`, la journée en cours est terminée et les jours restants partent de demain (0 si demain change de mois). « Par jour » et « À épargner » utilisent le même nombre de jours ; l'hypothèse est affichée (8/8 tâches).
+- Change `add-debug-date` : date simulée via `--debug_date` ou `debug_date` du JSON ; précédence CLI > JSON > date réelle ; ligne « Date simulée » affichée (6/6 tâches).
+- Hors change : renommage « ouvré » → « ouvrable » (code, README, tests, specs), libellés de sortie réalignés, calendrier élargi (cases de 6 caractères).
+- Tests : 32 OK ; `openspec validate --all` OK.
+
+### Décisions
+- Un plafonnement du « Quota normal par jour » aux tokens restants le dernier jour a été essayé puis annulé à la demande de l'utilisateur : ne pas le réintroduire.
+- Défaut conservé : aujourd'hui compte comme jour restant.
+
+### Reste à faire (utilisateur)
+1. Retirer `debug_date` de `config.json` pour revenir à la date réelle.
+2. Archiver les changes terminés (`/opsx-archive`) ; les specs ne sont pas encore synchronisés dans `openspec/specs/`.
+3. Committer les modifications.
