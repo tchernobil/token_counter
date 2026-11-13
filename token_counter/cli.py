@@ -52,8 +52,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "used",
         type=_non_negative_int,
+        nargs="?",
         metavar="tokens_utilises",
-        help="tokens utilisés depuis le début du mois",
+        help="tokens utilisés depuis le début du mois (demandé en boucle si omis)",
     )
     parser.add_argument(
         "--config", type=Path, default=Path("config.json"), help="défaut : config.json"
@@ -65,6 +66,9 @@ def build_parser() -> argparse.ArgumentParser:
         help="simule la date du jour (prime sur debug_date de config.json)",
     )
     return parser
+
+
+LIMIT_REACHED = 2
 
 
 def run(
@@ -89,6 +93,18 @@ def run(
     )
     budget = compute_budget(config.total_tokens, used, month_days, left_days)
 
+    if budget.remaining <= 0:
+        next_month = (today.replace(day=1) + timedelta(days=32)).replace(day=1)
+        wait = (next_month - today).days
+        unit = "jour" if wait == 1 else "jours"
+        print()
+        print(
+            "* Votre limite de token est déjà dépassée. "
+            f"Veuillez attendre {wait} {unit} pour le début du prochain mois."
+        )
+        print()
+        return LIMIT_REACHED
+
     print(render_month(today, config.holidays))
     print()
     if simulated is not None:
@@ -98,8 +114,6 @@ def run(
     print(f"Restants        : {_fmt(budget.remaining)}")
     scope = "aujourd'hui exclu" if config.exclude_today else "aujourd'hui inclus"
     print(f"Jours ouvrables : {left_days} restants ({scope}) / {month_days} dans le mois")
-    if budget.overrun:
-        print("ATTENTION : le total de tokens du mois est dépassé.")
     if budget.normal_per_day is None:
         print("Aucun jour ouvrable dans le mois.")
         print()
@@ -109,17 +123,15 @@ def run(
     else:
         print(
             f"Par jour        : {_fmt(budget.remaining_per_day)} / "
-            f"{_fmt(budget.normal_per_day)} ({budget.ratio_percent:.0f} %)"
+            f"{_fmt(budget.normal_per_day)} (quota normal) : {budget.ratio_percent:.0f} %"
         )
     if budget.to_save:
         print(
-            f"À épargner      : {_fmt(budget.to_save)} tokens "
-            f"pour tenir {_fmt(budget.normal_per_day)}/jour"
+            f"À épargner      : {_fmt(budget.to_save)} tokens à rattraper "
+            f"pour revenir à {_fmt(budget.normal_per_day)}/jour"
         )
-        print(
-            f"Il manquera     : ≈ {budget.to_save / budget.normal_per_day:.1f} "
-            "jours de quota normal"
-        )
+        missing = min(budget.to_save / budget.normal_per_day, left_days)
+        print(f"Il manquera     : ≈ {missing:.1f} jours avec le quota normal")
     elif budget.to_save == 0:
         print("À épargner      : 0 (rythme normal tenu)")
     print()
@@ -128,4 +140,35 @@ def run(
 
 def main(argv=None) -> int:
     args = build_parser().parse_args(argv)
-    return run(args.used, args.config, date.today(), args.debug_date)
+    first_prompt = "Nombre de tokens dépensés (q pour quitter) : "
+    if args.used is not None:
+        status = run(args.used, args.config, date.today(), args.debug_date)
+        if status != 0:
+            return 0 if status == LIMIT_REACHED else status
+        first_prompt = UPDATE_PROMPT
+    return interactive(args.config, args.debug_date, first_prompt)
+
+
+UPDATE_PROMPT = "Update des tokens dépensés (q pour quitter) : "
+
+
+def interactive(
+    config_path: Path, debug_date: Optional[date], prompt: str = UPDATE_PROMPT
+) -> int:
+    while True:
+        try:
+            answer = input(prompt).strip()
+        except (EOFError, KeyboardInterrupt):
+            print()
+            return 0
+        if answer.lower() in ("q", "quit", "quitter"):
+            return 0
+        try:
+            used = _non_negative_int(answer)
+        except argparse.ArgumentTypeError as exc:
+            print(f"Erreur : {exc}", file=sys.stderr)
+            continue
+        status = run(used, config_path, date.today(), debug_date)
+        if status != 0:
+            return 0 if status == LIMIT_REACHED else status
+        prompt = UPDATE_PROMPT
