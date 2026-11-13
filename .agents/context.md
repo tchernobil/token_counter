@@ -132,7 +132,7 @@ Calculer les tokens restants à consommer par jour ouvrable jusqu'à la fin du m
 ### Environnement constaté
 - Python 3.9+, aucune dépendance externe. Tests : `python3 -m unittest discover -s tests`.
 - Package `token_counter/` : `config.py`, `calendar_utils.py`, `budget.py` (fonctions pures), `cli.py`. Lancement : `python -m token_counter <tokens_utilises> [--config f] [--debug_date AAAA-MM-JJ]`.
-- `config.json` (ignoré par git) : `total_tokens`, `holidays`, `exclude_today` (défaut `false`), `debug_date` (défaut `null`). Modèle : `config.example.json`.
+- `config.json` (ignoré par git) : `total_tokens`, `holidays`, `exclude_today` (défaut `false`), `debug_date` (défaut `null`).
 - Workflow : OpenSpec (`openspec/changes/`, schéma spec-driven, artefacts en français). Vocabulaire : « jours ouvrables » (et non « ouvrés »).
 
 ### Réalisé (non committé)

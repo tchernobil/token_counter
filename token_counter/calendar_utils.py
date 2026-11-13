@@ -31,8 +31,11 @@ MOIS = [
 ]
 
 
-def render_month(today: date, holidays) -> str:
-    """Calendrier texte en tableau : * aujourd'hui, & férié, . week-end."""
+def render_month(today: date, holidays, strike: bool = False) -> str:
+    """Calendrier texte en tableau : * aujourd'hui, & férié, . week-end.
+
+    Avec strike, les jours ouvrés passés sont barrés (caractère combinant U+0336, sans séquence d'échappement).
+    """
     width = 6
     border = "+" + "+".join("-" * width for _ in range(7)) + "+"
     title = f"{MOIS[today.month - 1]} {today.year}".center(len(border)).rstrip()
@@ -60,7 +63,12 @@ def render_month(today: date, holidays) -> str:
                 mark = "."
             else:
                 mark = " "
-            cells.append(f"{d:>3}{mark}  ")
+            number = str(d)
+            pad = " " * (3 - len(number))
+            body = f" {number}{mark}"
+            if strike and current < today and current.weekday() < 5:
+                body = "".join(c + "\u0336" for c in body)
+            cells.append(pad[:-1] + body + "  ")
         lines.append("|" + "|".join(cells) + "|")
         lines.append(border)
     lines.append("(* aujourd'hui, & férié, . week-end)")

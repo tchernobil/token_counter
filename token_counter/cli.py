@@ -105,7 +105,7 @@ def run(
         print()
         return LIMIT_REACHED
 
-    print(render_month(today, config.holidays))
+    print(render_month(today, config.holidays, strike=sys.stdout.isatty()))
     print()
     if simulated is not None:
         print(f"Date simulée    : {simulated.isoformat()}")

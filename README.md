@@ -6,11 +6,7 @@ Python 3.9+, aucune dépendance externe.
 
 ## Configuration
 
-Copier l'exemple puis l'adapter :
-
-```bash
-cp config.example.json config.json
-```
+Adapter `config.json` (à la racine du projet) :
 
 ```json
 {
